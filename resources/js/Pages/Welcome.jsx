@@ -206,6 +206,7 @@ export default function Welcome() {
                         <div className="hidden md:flex items-center space-x-8">
                             <a
                                 href="#home"
+                                onClick={(e) => handleScroll(e, "home")}
                                 className="text-slate-600 hover:text-sky-600 font-medium transition"
                             >
                                 Beranda
@@ -279,112 +280,144 @@ export default function Welcome() {
                                     Pelajari Kebiasaan
                                 </Button>
                             </div>
-                            <div className="flex items-center gap-8 pt-4 border-t border-slate-200/60">
-                                <div>
-                                    <p className="text-2xl font-bold text-sky-600">
-                                        1k+
-                                    </p>
-                                    <p className="text-xs text-slate-500 uppercase tracking-wide">
-                                        Siswa Aktif
-                                    </p>
-                                </div>
-                            </div>
                         </motion.div>
 
-                        <div className="relative lg:h-[600px] flex items-center justify-center">
+                        {/* Right Content (Floating Phone Mockup - WIDER VERSION) */}
+                        <div className="relative lg:h-[650px] flex items-center justify-center">
                             <motion.div
-                                animate={{ y: [0, -20, 0] }}
+                                animate={{ y: [0, -15, 0] }}
                                 transition={{
                                     repeat: Infinity,
                                     duration: 6,
                                     ease: "easeInOut",
                                 }}
-                                className="relative w-full max-w-md aspect-[4/5] bg-white rounded-[2.5rem] shadow-2xl border-8 border-white overflow-hidden ring-1 ring-slate-900/5"
+                                // UPDATE UKURAN DI SINI:
+                                // Lama: w-[320px] h-[640px] (Terlalu kurus/panjang)
+                                // Baru: w-[350px] h-[600px] (Lebih lebar & pas)
+                                className="relative w-[350px] h-[600px] bg-white rounded-[3rem] shadow-2xl border-[8px] border-white ring-1 ring-slate-900/10 z-10"
                             >
-                                <div className="h-32 bg-gradient-to-b from-sky-500 to-sky-400 p-6 flex flex-col justify-between text-white">
-                                    <div className="flex justify-between items-center">
-                                        <Menu className="w-6 h-6" />
-                                        <Bell className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sky-100 text-sm">
-                                            Selamat Pagi,
-                                        </p>
-                                        <p className="font-bold text-2xl">
-                                            Dwi Sunanto
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="p-6 space-y-4">
-                                    <div className="bg-sky-50 p-4 rounded-2xl flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center text-white">
-                                            <PieChart className="w-6 h-6" />
+                                {/* --- LAYAR HP (INNER SCREEN) --- */}
+                                <div className="absolute inset-0 bg-slate-50 rounded-[2.5rem] overflow-hidden flex flex-col">
+                                    {/* Header Biru */}
+                                    <div className="bg-[#0ea5e9] p-6 pb-8 text-white shrink-0 relative">
+                                        <div className="flex justify-between items-center mb-6">
+                                            <Menu className="w-6 h-6 opacity-90" />
+                                            <Bell className="w-6 h-6 opacity-90" />
                                         </div>
                                         <div>
-                                            <p className="font-bold text-slate-800">
-                                                Progress Hari Ini
+                                            <p className="text-sky-100 text-sm font-medium mb-1">
+                                                Selamat Pagi,
                                             </p>
-                                            <div className="w-32 h-2 bg-sky-200 rounded-full mt-1">
-                                                <div className="w-3/4 h-full bg-sky-500 rounded-full"></div>
-                                            </div>
+                                            <h2 className="font-bold text-2xl tracking-tight">
+                                                Ahmad Thoriq
+                                            </h2>
                                         </div>
                                     </div>
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between p-3 border border-slate-100 rounded-xl shadow-sm">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-yellow-100 text-yellow-600 rounded-lg">
-                                                    <Sun size={18} />
+
+                                    {/* Konten Scrollable */}
+                                    <div className="flex-1 overflow-y-auto p-5 space-y-4 -mt-4">
+                                        {/* Card Progress */}
+                                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 relative z-10">
+                                            <div className="w-12 h-12 rounded-full bg-sky-500 flex items-center justify-center text-white shrink-0">
+                                                <PieChart className="w-6 h-6" />
+                                            </div>
+                                            <div className="w-full">
+                                                <p className="font-bold text-slate-800 text-sm mb-2">
+                                                    Progress Hari Ini
+                                                </p>
+                                                <div className="w-full h-2.5 bg-sky-100 rounded-full overflow-hidden">
+                                                    <div className="w-3/4 h-full bg-sky-500 rounded-full"></div>
                                                 </div>
-                                                <span className="font-semibold text-sm">
+                                            </div>
+                                        </div>
+
+                                        {/* List Item 1: Bangun Pagi */}
+                                        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-lg bg-yellow-50 text-yellow-500 flex items-center justify-center">
+                                                    <Sun
+                                                        size={20}
+                                                        fill="currentColor"
+                                                    />
+                                                </div>
+                                                <span className="font-semibold text-slate-700 text-sm">
                                                     Bangun Pagi
                                                 </span>
                                             </div>
-                                            <CheckCircle2
-                                                className="text-green-500 w-5 h-5"
-                                                fill="currentColor"
-                                                color="white"
-                                            />
+                                            <div className="text-green-500">
+                                                <CheckCircle2
+                                                    size={24}
+                                                    fill="currentColor"
+                                                    className="text-white"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="flex items-center justify-between p-3 border border-slate-100 rounded-xl shadow-sm">
+
+                                        {/* List Item 2: Beribadah */}
+                                        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
-                                                    <HeartHandshake size={18} />
+                                                <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center">
+                                                    <HeartHandshake size={20} />
                                                 </div>
-                                                <span className="font-semibold text-sm">
+                                                <span className="font-semibold text-slate-700 text-sm">
                                                     Beribadah
                                                 </span>
                                             </div>
-                                            <CheckCircle2
-                                                className="text-green-500 w-5 h-5"
-                                                fill="currentColor"
-                                                color="white"
-                                            />
+                                            <div className="text-green-500">
+                                                <CheckCircle2
+                                                    size={24}
+                                                    fill="currentColor"
+                                                    className="text-white"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* List Item 3: Olahraga */}
+                                        <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between opacity-80">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center">
+                                                    <Activity size={20} />
+                                                </div>
+                                                <span className="font-semibold text-slate-700 text-sm">
+                                                    Berolahraga
+                                                </span>
+                                            </div>
+                                            <span className="px-3 py-1 bg-slate-100 text-slate-400 text-[10px] font-bold rounded-full">
+                                                Belum
+                                            </span>
                                         </div>
                                     </div>
-                                    <motion.div
-                                        animate={{ scale: [1, 1.1, 1] }}
-                                        transition={{
-                                            repeat: Infinity,
-                                            duration: 2,
-                                        }}
-                                        className="absolute -bottom-5 -left-5 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-4 z-10"
-                                    >
-                                        <div className="bg-green-100 p-3 rounded-full text-green-600">
-                                            <Sparkles
-                                                className="w-6 h-6"
-                                                fill="currentColor"
-                                            />
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-slate-800">
-                                                Hebat!
-                                            </p>
-                                            <p className="text-xs text-slate-500">
-                                                Streak 5 Hari
-                                            </p>
-                                        </div>
-                                    </motion.div>
+
+                                    {/* Home Indicator */}
+                                    <div className="h-8 bg-white flex items-center justify-center shrink-0">
+                                        <div className="w-20 h-1 bg-slate-200 rounded-full"></div>
+                                    </div>
                                 </div>
+
+                                {/* --- FLOATING BADGE --- */}
+                                <motion.div
+                                    animate={{ scale: [1, 1.05, 1] }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 3,
+                                    }}
+                                    className="absolute bottom-20 -left-10 bg-white p-3 pr-5 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] flex items-center gap-3 z-30 border border-slate-50"
+                                >
+                                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                        <Sparkles
+                                            className="w-5 h-5"
+                                            fill="currentColor"
+                                        />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-slate-800 text-sm leading-tight">
+                                            Hebat!
+                                        </p>
+                                        <p className="text-[10px] text-slate-500 font-medium">
+                                            Streak 5 Hari
+                                        </p>
+                                    </div>
+                                </motion.div>
                             </motion.div>
                         </div>
                     </div>
@@ -404,26 +437,34 @@ export default function Welcome() {
                         </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* KARTU MURID */}
                         <RoleCard
                             title="Murid"
                             icon={<GraduationCap className="w-8 h-8" />}
                             color="sky"
                             desc="Isi jurnal harian, lihat grafik progress, dan kumpulkan lencana prestasi."
-                            link="/login"
+                            // UBAH LINK INI:
+                            link="/login?role=siswa"
                         />
+
+                        {/* KARTU GURU */}
                         <RoleCard
                             title="Guru"
                             icon={<Presentation className="w-8 h-8" />}
                             color="blue"
                             desc="Pantau aktivitas kelas, berikan feedback, dan validasi kebiasaan siswa."
-                            link="/login"
+                            // UBAH LINK INI:
+                            link="/login?role=guru"
                         />
+
+                        {/* KARTU ORANG TUA */}
                         <RoleCard
                             title="Orang Tua"
                             icon={<UserCheck className="w-8 h-8" />}
                             color="indigo"
                             desc="Dukungan dari rumah, lihat perkembangan anak, dan komunikasi dengan guru."
-                            link="/login"
+                            // UBAH LINK INI:
+                            link="/login?role=orangtua"
                         />
                     </div>
                 </div>
@@ -479,24 +520,66 @@ export default function Welcome() {
 
 // --- SUB-COMPONENTS ---
 
+// Disini Pembagian section terjadi. section nya terbagi menjadi dua yaitu header dan footer.
+// Pada bagian header terdapat Bagian mockup sederhana dari tampilan dashboard dari situs ini.
+// --- SUB-COMPONENTS ---
+
 function RoleCard({ title, icon, color, desc, link }) {
+    // KITA DEFINISIKAN CLASS LENGKAP DI SINI AGAR TERBACA OLEH TAILWIND
+    const variants = {
+        sky: {
+            border: "hover:border-sky-300",
+            shadow: "hover:shadow-sky-500/20",
+            line: "bg-sky-500",
+            iconBg: "bg-sky-50",
+            iconText: "text-sky-500",
+            buttonHover: "group-hover:bg-sky-500",
+        },
+        blue: {
+            border: "hover:border-blue-300",
+            shadow: "hover:shadow-blue-500/20",
+            line: "bg-blue-600", // Saya buat agak lebih gelap (600) biar kontras
+            iconBg: "bg-blue-50",
+            iconText: "text-blue-600",
+            buttonHover: "group-hover:bg-blue-600",
+        },
+        indigo: {
+            border: "hover:border-indigo-300",
+            shadow: "hover:shadow-indigo-500/20",
+            line: "bg-indigo-500",
+            iconBg: "bg-indigo-50",
+            iconText: "text-indigo-500",
+            buttonHover: "group-hover:bg-indigo-500",
+        },
+    };
+
+    // Ambil style berdasarkan prop 'color', default ke 'sky' jika tidak ada
+    const theme = variants[color] || variants.sky;
+
     return (
         <Link
             href={link}
-            className={`group relative bg-white rounded-3xl p-8 border border-slate-100 hover:border-${color}-300 shadow-lg shadow-slate-200/50 hover:shadow-${color}-500/20 transition-all duration-300 hover:-translate-y-2`}
+            className={`group relative bg-white rounded-3xl p-8 border border-slate-100 ${theme.border} shadow-lg shadow-slate-200/50 ${theme.shadow} transition-all duration-300 hover:-translate-y-2`}
         >
+            {/* Garis Atas */}
             <div
-                className={`absolute top-0 left-0 w-full h-2 bg-${color}-500 rounded-t-3xl`}
+                className={`absolute top-0 left-0 w-full h-2 rounded-t-3xl ${theme.line}`}
             ></div>
+
+            {/* Icon */}
             <div
-                className={`w-16 h-16 bg-${color}-50 rounded-2xl flex items-center justify-center text-${color}-500 mb-6 group-hover:scale-110 transition duration-300`}
+                className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 ${theme.iconBg} ${theme.iconText}`}
             >
                 {icon}
             </div>
+
+            {/* Text */}
             <h3 className="text-2xl font-bold text-slate-800 mb-2">{title}</h3>
             <p className="text-slate-500 text-sm mb-6">{desc}</p>
+
+            {/* Button */}
             <div
-                className={`w-full py-3 rounded-xl bg-slate-50 text-slate-700 font-bold group-hover:bg-${color}-500 group-hover:text-white transition-colors flex items-center justify-center gap-2`}
+                className={`w-full py-3 rounded-xl bg-slate-50 text-slate-700 font-bold transition-colors flex items-center justify-center gap-2 group-hover:text-white ${theme.buttonHover}`}
             >
                 Masuk {title} <ArrowRight className="w-4 h-4" />
             </div>
@@ -660,7 +743,7 @@ function HabitModal({ habit, isDesktop }) {
                         </div>
                         <div>
                             <h5 className="font-bold text-yellow-300 text-xs uppercase tracking-wide mb-1">
-                                Tips Jitu
+                                tips
                             </h5>
                             <p className="font-bold text-lg leading-tight">
                                 "{habit.tips}"

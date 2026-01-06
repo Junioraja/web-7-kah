@@ -77,7 +77,7 @@ export default function SocialHabit() {
 
                     {/* FORM SECTION */}
                     <form onSubmit={submit} className="bg-card border border-border rounded-[2.5rem] p-8 space-y-10 shadow-sm relative overflow-hidden">
-                        
+                            
                         {/* 1. CHECKLIST KEBAIKAN */}
                         <div className="space-y-4">
                             <label className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-muted-foreground">

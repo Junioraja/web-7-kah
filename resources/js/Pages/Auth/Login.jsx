@@ -1,174 +1,374 @@
-import React, { useState } from 'react';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { 
-    StarFour, ShieldCheck, IdentificationCard, ChalkboardTeacher, 
-    EnvelopeSimple, LockKey, ArrowRight, Eye, EyeSlash, 
-    CaretLeft, Student, UsersThree 
-} from '@phosphor-icons/react';
+import { useState, useEffect } from "react";
+import { Head, Link, useForm } from "@inertiajs/react";
+import {
+    GraduationCap,
+    Presentation,
+    UserCheck,
+    Eye,
+    EyeOff,
+    ArrowRight,
+    Sparkles,
+    ArrowLeft,
+} from "lucide-react";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
+import { router } from "@inertiajs/react";
 
 export default function Login() {
-    const [activeTab, setActiveTab] = useState('student');
-    const [teacherSubTab, setTeacherSubTab] = useState('pns');
-    const [showPassword, setShowPassword] = useState(false); // State untuk toggle mata password
+    // State Role & Tipe Guru
+    const [role, setRole] = useState("siswa");
+    const [guruType, setGuruType] = useState("pns");
+    const [showPassword, setShowPassword] = useState(false);
 
-    const { data, setData, post, processing, errors } = useForm({
-        role: 'student',
-        identity: '',
-        password: '',
-        remember: false,
-        teacher_type: 'pns',
+    // --- CONFIG TEMA (RAHASIA TRANSISI HALUS) ---
+    const roleThemes = {
+        siswa: {
+            bg: "bg-sky-500", // Warna Header
+            bgHover: "hover:bg-sky-600", // Warna Hover Button
+            text: "text-sky-500", // Warna Teks Aktif
+            textLight: "text-sky-100", // Teks Header Pudar
+            border: "focus:border-sky-500", // Border Input
+            ring: "focus:ring-sky-500", // Ring Input
+            shadow: "shadow-sky-200", // Shadow Button
+            iconBg: "bg-sky-50", // Background Icon Tab
+            blob: "bg-sky-200", // Background Blob
+        },
+        guru: {
+            bg: "bg-blue-600",
+            bgHover: "hover:bg-blue-700",
+            text: "text-blue-600",
+            textLight: "text-blue-100",
+            border: "focus:border-blue-500",
+            ring: "focus:ring-blue-500",
+            shadow: "shadow-blue-200",
+            iconBg: "bg-blue-50",
+            blob: "bg-blue-200",
+        },
+        orangtua: {
+            bg: "bg-indigo-600",
+            bgHover: "hover:bg-indigo-700",
+            text: "text-indigo-600",
+            textLight: "text-indigo-100",
+            border: "focus:border-indigo-500",
+            ring: "focus:ring-indigo-500",
+            shadow: "shadow-indigo-200",
+            iconBg: "bg-indigo-50",
+            blob: "bg-indigo-200",
+        },
+    };
+
+    // Ambil tema saat ini berdasarkan state role
+    const activeTheme = roleThemes[role];
+
+    const { data, setData, post, processing } = useForm({
+        role: "siswa",
+        identifier: "",
+        password: "",
+        guru_type: "pns",
     });
 
-    const handleRoleChange = (role) => {
-        setActiveTab(role);
-        setData({ ...data, role: role, identity: '' });
-    };
+    // --- LOGIKA OTOMATIS GANTI ROLE DARI URL ---
+    useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const roleParam = searchParams.get("role");
+
+        if (roleParam && ["siswa", "guru", "orangtua"].includes(roleParam)) {
+            setRole(roleParam);
+            setData("role", roleParam);
+        }
+    }, []);
 
     const submit = (e) => {
-        e.preventDefault();
-        post(route('login'));
-    };
+    e.preventDefault(); // Mencegah reload browser biasa
+    post('/login');     // Mengirim data via Inertia
+};
 
-    const config = {
-        student: { label: "Nomor Induk Siswa (NIS)", placeholder: "Contoh: 12345678", icon: IdentificationCard },
-        teacher: { 
-            label: teacherSubTab === 'pns' ? "NIP Guru" : "Nama Lengkap Guru", 
-            placeholder: teacherSubTab === 'pns' ? "Contoh: 1980..." : "Nama sesuai Dapodik", 
-            icon: teacherSubTab === 'pns' ? IdentificationCard : ChalkboardTeacher 
-        },
-        parent: { label: "Alamat Email", placeholder: "nama@email.com", icon: EnvelopeSimple }
-    };
+    // Fungsi ganti role dengan update data form & URL
+    const handleRoleChange = (newRole) => {
+        setRole(newRole);
+        setData({ ...data, role: newRole, identifier: "" });
 
-    const ActiveIcon = config[activeTab].icon;
+        // Update URL tanpa refresh (Optional UX improvement)
+        const url = new URL(window.location);
+        url.searchParams.set("role", newRole);
+        window.history.pushState({}, "", url);
+    };
 
     return (
-        <div className="bg-brand-50 min-h-screen flex items-center justify-center p-4 font-sans text-slate-900">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-700">
             <Head title="Masuk - TunasHebat" />
-            
-            <div className="max-w-4xl w-full bg-white rounded-[2rem] shadow-2xl shadow-brand-500/10 overflow-hidden flex flex-col md:flex-row animate-in fade-in duration-500">
-                
-                {/* LEFT COLUMN: BRANDING */}
-                <div className="md:w-1/2 bg-gradient-to-br from-[#0ea5e9] to-[#0284c7] p-12 text-white flex flex-col justify-between relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cube-coat.png')] opacity-10"></div>
-                    
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-2 mb-8">
-                            <div className="w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center">
-                                <StarFour weight="fill" />
-                            </div>
-                            <span className="font-bold text-xl tracking-tight">TunasHebat</span>
-                        </div>
-                        <h2 className="text-3xl font-extrabold leading-tight mb-4 text-white">Mari Bentuk Kebiasaan Hebat Bersama!</h2>
-                        <p className="text-blue-100 italic">"Karakter besar dibangun dari kebiasaan-kebiasaan kecil yang dilakukan setiap hari."</p>
-                    </div>
-                    
-                    <div className="hidden md:block relative z-10">
-                        <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
-                            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl">
-                                <ShieldCheck weight="fill" />
-                            </div>
-                            <p className="text-xs text-blue-50">Sistem keamanan data terpadu untuk Murid, Guru, dan Orang Tua.</p>
-                        </div>
-                    </div>
-                </div>
 
-                {/* RIGHT COLUMN: FORM AREA */}
-                <div className="md:w-1/2 p-8 lg:p-12 bg-white relative">
-                    
-                    {/* Tombol Back ke Landing Page */}
-                    <Link href="/" className="inline-flex items-center gap-1 text-slate-400 hover:text-[#0ea5e9] transition-colors mb-6 group text-sm font-medium">
-                        <CaretLeft size={16} weight="bold" className="group-hover:-translate-x-1 transition-transform" />
-                        Kembali
+            {/* Background Blobs (Ikut Berubah Warna) */}
+            <div
+                className={`fixed top-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2 transition-colors duration-1000 ${activeTheme.blob}`}
+            ></div>
+            <div
+                className={`fixed bottom-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-30 translate-x-1/3 translate-y-1/3 transition-colors duration-1000 ${activeTheme.blob}`}
+            ></div>
+
+            <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-xl border border-white relative z-10 overflow-hidden transition-all duration-500">
+                {/* --- HEADER DINAMIS --- */}
+                <div
+                    className={`${activeTheme.bg} p-8 pb-12 text-center text-white relative transition-colors duration-500 ease-in-out`}
+                >
+                    {/* Tombol Kembali ke Beranda */}
+                    <Link
+                        href="/"
+                        className={`absolute top-6 left-6 ${activeTheme.textLight} hover:text-white transition-colors duration-200 p-2 rounded-full hover:bg-white/10`}
+                        title="Kembali ke Beranda"
+                    >
+                        <ArrowLeft size={24} />
                     </Link>
 
-                    <h3 className="text-2xl font-bold text-slate-800 mb-2">Selamat Datang!</h3>
-                    <p className="text-slate-500 text-sm mb-6">Pilih peran Anda untuk masuk.</p>
+                    <div className="flex justify-center mb-4">
+                        <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-inner">
+                            <Sparkles
+                                className="w-6 h-6 text-white"
+                                fill="currentColor"
+                            />
+                        </div>
+                    </div>
+                    <h2 className="text-2xl font-bold tracking-tight">
+                        Selamat Datang!
+                    </h2>
+                    <p
+                        className={`${activeTheme.textLight} text-sm mt-1 transition-colors duration-500`}
+                    >
+                        Silakan masuk sesuai peran Anda.
+                    </p>
+                </div>
 
-                    {/* ROLE TABS DENGAN LOGO */}
-                    <div className="flex bg-slate-100 p-1.5 rounded-xl mb-8">
-                        <button type="button" onClick={() => handleRoleChange('student')} 
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'student' ? 'shadow-sm bg-white text-[#0ea5e9]' : 'text-slate-500 hover:text-slate-700'}`}>
-                            <Student size={18} weight={activeTab === 'student' ? "fill" : "bold"} />
-                            <span>Murid</span>
-                        </button>
-                        <button type="button" onClick={() => handleRoleChange('teacher')} 
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'teacher' ? 'shadow-sm bg-white text-[#0ea5e9]' : 'text-slate-500 hover:text-slate-700'}`}>
-                            <ChalkboardTeacher size={18} weight={activeTab === 'teacher' ? "fill" : "bold"} />
-                            <span>Guru</span>
-                        </button>
-                        <button type="button" onClick={() => handleRoleChange('parent')} 
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'parent' ? 'shadow-sm bg-white text-[#0ea5e9]' : 'text-slate-500 hover:text-slate-700'}`}>
-                            <UsersThree size={18} weight={activeTab === 'parent' ? "fill" : "bold"} />
-                            <span>Orang Tua</span>
-                        </button>
+                <div className="p-8 -mt-8 bg-white rounded-t-[2.5rem] relative">
+                    {/* --- ROLE TABS --- */}
+                    <div className="grid grid-cols-3 gap-2 p-1.5 bg-slate-50 rounded-2xl mb-8 border border-slate-100">
+                        {["siswa", "guru", "orangtua"].map((item) => (
+                            <button
+                                key={item}
+                                type="button"
+                                onClick={() => handleRoleChange(item)}
+                                className={`flex flex-col items-center justify-center py-3 rounded-xl transition-all duration-300 relative overflow-hidden group ${
+                                    role === item
+                                        ? "bg-white shadow-md scale-100"
+                                        : "text-slate-400 hover:text-slate-600 hover:bg-white/50"
+                                }`}
+                            >
+                                <div
+                                    className={`transition-colors duration-300 ${
+                                        role === item
+                                            ? roleThemes[item].text
+                                            : "text-slate-400 group-hover:text-slate-500"
+                                    }`}
+                                >
+                                    {item === "siswa" && (
+                                        <GraduationCap
+                                            size={20}
+                                            className="mb-1"
+                                        />
+                                    )}
+                                    {item === "guru" && (
+                                        <Presentation
+                                            size={20}
+                                            className="mb-1"
+                                        />
+                                    )}
+                                    {item === "orangtua" && (
+                                        <UserCheck size={20} className="mb-1" />
+                                    )}
+                                </div>
+                                <span
+                                    className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${
+                                        role === item
+                                            ? roleThemes[item].text
+                                            : ""
+                                    }`}
+                                >
+                                    {item === "orangtua" ? "Ortu" : item}
+                                </span>
+                            </button>
+                        ))}
                     </div>
 
                     <form onSubmit={submit} className="space-y-5">
-                        {activeTab === 'teacher' && (
-                            <div className="flex bg-slate-50 p-1 rounded-lg border border-slate-100 animate-in slide-in-from-top-1">
-                                <button type="button" onClick={() => { setTeacherSubTab('pns'); setData('teacher_type', 'pns'); }} className={`flex-1 py-1 text-[10px] font-bold rounded-md transition ${teacherSubTab === 'pns' ? 'bg-white shadow-sm text-[#0ea5e9]' : 'text-slate-400'}`}>PNS</button>
-                                <button type="button" onClick={() => { setTeacherSubTab('honorer'); setData('teacher_type', 'honorer'); }} className={`flex-1 py-1 text-[10px] font-bold rounded-md transition ${teacherSubTab === 'honorer' ? 'bg-white shadow-sm text-[#0ea5e9]' : 'text-slate-400'}`}>HONORER</button>
+                        {/* 1. ROLE SISWA (INPUT ANGKA SAJA) */}
+                        {role === "siswa" && (
+                            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                <Label className="text-slate-600 font-semibold ml-1">
+                                    NIS (Nomor Induk Siswa)
+                                </Label>
+                                <Input
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    placeholder="Contoh: 123456"
+                                    className={`mt-1.5 h-12 rounded-xl bg-slate-50 border-slate-200 transition-all duration-300 focus:bg-white ${activeTheme.ring} ${activeTheme.border}`}
+                                    value={data.identifier}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(
+                                            /[^0-9]/g,
+                                            ""
+                                        );
+                                        setData("identifier", value);
+                                    }}
+                                    autoFocus
+                                />
                             </div>
                         )}
 
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">{config[activeTab].label}</label>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0ea5e9]">
-                                    <ActiveIcon size={20} />
+                        {/* 2. ROLE GURU (MICRO SWITCH) */}
+                        {role === "guru" && (
+                            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Label className="text-slate-600 font-semibold ml-1">
+                                            {guruType === "pns"
+                                                ? "NIP (Nomor Induk Pegawai)"
+                                                : "Nama Lengkap"}
+                                        </Label>
+
+                                        {/* Micro Switch Guru */}
+                                        <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setGuruType("pns");
+                                                    setData("identifier", "");
+                                                }}
+                                                className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all duration-300 ${
+                                                    guruType === "pns"
+                                                        ? "bg-white text-blue-600 shadow-sm"
+                                                        : "text-slate-400 hover:text-slate-600"
+                                                }`}
+                                            >
+                                                PNS
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setGuruType("honorer");
+                                                    setData("identifier", "");
+                                                }}
+                                                className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all duration-300 ${
+                                                    guruType === "honorer"
+                                                        ? "bg-white text-blue-600 shadow-sm"
+                                                        : "text-slate-400 hover:text-slate-600"
+                                                }`}
+                                            >
+                                                Honorer
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <Input
+                                        key={guruType}
+                                        type="text"
+                                        inputMode={
+                                            guruType === "pns"
+                                                ? "numeric"
+                                                : "text"
+                                        }
+                                        placeholder={
+                                            guruType === "pns"
+                                                ? "Contoh: 19850101..."
+                                                : "Masukkan Nama Lengkap"
+                                        }
+                                        className={`h-12 rounded-xl bg-slate-50 border-slate-200 transition-all duration-300 focus:bg-white ${activeTheme.ring} ${activeTheme.border}`}
+                                        value={data.identifier}
+                                        onChange={(e) => {
+                                            let value = e.target.value;
+                                            if (guruType === "pns") {
+                                                value = value.replace(
+                                                    /[^0-9]/g,
+                                                    ""
+                                                );
+                                            }
+                                            setData("identifier", value);
+                                        }}
+                                        autoFocus
+                                    />
                                 </div>
-                                <input 
-                                    type={activeTab === 'parent' ? 'email' : 'text'}
-                                    placeholder={config[activeTab].placeholder}
-                                    value={data.identity}
-                                    onChange={e => setData('identity', e.target.value)}
-                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 outline-none transition text-sm text-slate-700"
-                                    required
+                            </div>
+                        )}
+
+                        {/* 3. ROLE ORANG TUA */}
+                        {role === "orangtua" && (
+                            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                <Label className="text-slate-600 font-semibold ml-1">
+                                    Email Terdaftar
+                                </Label>
+                                <Input
+                                    type="email"
+                                    placeholder="nama@email.com"
+                                    className={`mt-1.5 h-12 rounded-xl bg-slate-50 border-slate-200 transition-all duration-300 focus:bg-white ${activeTheme.ring} ${activeTheme.border}`}
+                                    value={data.identifier}
+                                    onChange={(e) =>
+                                        setData("identifier", e.target.value)
+                                    }
+                                    autoFocus
                                 />
                             </div>
-                            {errors.identity && <p className="text-red-500 text-xs mt-1 font-medium">{errors.identity}</p>}
-                        </div>
+                        )}
 
-                        <div>
-                            <div className="flex justify-between mb-1">
-                                <label className="block text-sm font-semibold text-slate-700">Kata Sandi</label>
-                                <Link href={route('password.request')} className="text-xs font-semibold text-[#0ea5e9] hover:underline">Lupa Password?</Link>
-                            </div>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0ea5e9]">
-                                    <LockKey size={20} />
-                                </div>
-                                <input 
+                        {/* --- PASSWORD FIELD --- */}
+                        <div className="relative">
+                            <Label className="text-slate-600 font-semibold ml-1">
+                                Kata Sandi
+                            </Label>
+                            <div className="relative">
+                                <Input
                                     type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"
+                                    className={`mt-1.5 h-12 rounded-xl bg-slate-50 border-slate-200 pr-10 transition-all duration-300 focus:bg-white ${activeTheme.ring} ${activeTheme.border}`}
                                     value={data.password}
-                                    onChange={e => setData('password', e.target.value)}
-                                    className="w-full pl-11 pr-12 py-3 rounded-xl border border-slate-200 focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 outline-none transition text-sm text-slate-700"
-                                    required
+                                    onChange={(e) =>
+                                        setData("password", e.target.value)
+                                    }
                                 />
-                                {/* Tombol Mata Password */}
-                                <button 
+                                <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-[#0ea5e9] transition-colors"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    className="absolute right-3 top-1/2 translate-y-[-20%] text-slate-400 hover:text-slate-600 transition-colors"
                                 >
-                                    {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+                                    {showPassword ? (
+                                        <EyeOff size={20} />
+                                    ) : (
+                                        <Eye size={20} />
+                                    )}
                                 </button>
                             </div>
-                            {errors.password && <p className="text-red-500 text-xs mt-1 font-medium">{errors.password}</p>}
                         </div>
 
-                        <button disabled={processing} type="submit" className="w-full py-3.5 bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 mt-2">
-                            <span>{processing ? 'Memproses...' : 'Masuk Sekarang'}</span>
-                            <ArrowRight weight="bold" />
-                        </button>
-                    </form>
+                        {/* --- TOMBOL SUBMIT --- */}
+                        <Button
+                            className={`w-full h-12 rounded-xl text-md font-bold shadow-lg transition-all duration-500 active:scale-95 ${activeTheme.bg} ${activeTheme.bgHover} ${activeTheme.shadow}`}
+                            disabled={processing}
+                        >
+                            Masuk Sekarang{" "}
+                            <ArrowRight className="ml-2 w-5 h-5" />
+                        </Button>
 
-                    {activeTab === 'parent' && (
-                        <p className="text-center text-slate-400 text-xs mt-8 animate-in fade-in">
-                            Belum punya akun? <Link href={route('register')} className="text-[#0ea5e9] font-bold hover:underline">Daftar Akun Baru</Link>
-                        </p>
-                    )}
+                        {/* Link Register / Lupa Password */}
+                        <div className="text-center pt-2 h-6">
+                            {role === "orangtua" ? (
+                                <p className="text-slate-500 text-sm animate-in fade-in duration-300">
+                                    Belum punya akun?{" "}
+                                    <Link
+                                        href="/register"
+                                        className={`font-bold transition-colors duration-300 hover:underline ${activeTheme.text}`}
+                                    >
+                                        Daftar Orang Tua
+                                    </Link>
+                                </p>
+                            ) : (
+                                <p className="text-slate-400 text-xs animate-in fade-in duration-300">
+                                    Lupa NIS/NIP/Password? Hubungi Admin
+                                    Sekolah.
+                                </p>
+                            )}
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

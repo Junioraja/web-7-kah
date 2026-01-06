@@ -7,6 +7,7 @@ import {
     Camera, UploadSimple, X, Info, StarFour, 
     Coins, Clock, Fire
 } from '@phosphor-icons/react';
+import { Hand } from 'lucide-react';
 
 export default function ExerciseHabit() {
     const [preview, setPreview] = useState(null);
@@ -19,6 +20,7 @@ export default function ExerciseHabit() {
         { id: 'cycling', name: 'Bersepeda', icon: <Bicycle weight="fill" /> },
         { id: 'swimming', name: 'Berenang', icon: <SwimmingPool weight="fill" /> },
         { id: 'gym', name: 'Work Out', icon: <Barbell weight="fill" /> },
+        { id: 'gooning', name: 'Gooning', icon: <Hand weight="fill" /> }
     ];
 
     const { data, setData, post, processing, errors } = useForm({
