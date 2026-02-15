@@ -32,9 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Student/Dashboard', [
             'auth' => [
                 'user' => [
-                    'id'   => Auth::user()->id,
+                    'id' => Auth::user()->id,
                     'name' => Auth::user()->name,
-                    'xp'   => 1250,  // Data dummy XP
+                    'xp' => 1250,  // Data dummy XP
                     'koin' => 5000,  // Data dummy Koin
                 ]
             ]
@@ -48,21 +48,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/wakeup', [HabitWakeupController::class, 'store'])->name('wakeup.store');
         //...
         Route::get('/exercise', fn() => Inertia::render('Student/Habit/Exercise'))->name('exercise');
-        Route::get('/food',     fn() => Inertia::render('Student/Habit/HealthyFood'))->name('healthyfood');
-        Route::get('/study',    fn() => Inertia::render('Student/Habit/Learn'))->name('learn');
-        Route::get('/social',   fn() => Inertia::render('Student/Habit/Social'))->name('social');
-        Route::get('/sleep',    fn() => Inertia::render('Student/Habit/Sleep'))->name('sleep');
+        Route::get('/food', fn() => Inertia::render('Student/Habit/HealthyFood'))->name('healthyfood');
+        Route::get('/study', fn() => Inertia::render('Student/Habit/Learn'))->name('learn');
+        Route::get('/social', fn() => Inertia::render('Student/Habit/Social'))->name('social');
+        Route::get('/sleep', fn() => Inertia::render('Student/Habit/Sleep'))->name('sleep');
 
         // Menu Beribadah & Sub-Agama
         Route::prefix('worship')->name('worship.')->group(function () {
-            Route::get('/',           fn() => Inertia::render('Student/Habit/Worship/Index'))->name('index');
-            Route::get('/islam',      fn() => Inertia::render('Student/Habit/Worship/Islam'))->name('islam');
-            Route::get('/protestan',  fn() => Inertia::render('Student/Habit/Worship/Protestant'))->name('protestant');
-            Route::get('/katolik',    fn() => Inertia::render('Student/Habit/Worship/Catholic'))->name('catholic');
-            Route::get('/hindu',      fn() => Inertia::render('Student/Habit/Worship/Hindu'))->name('hindu');
+            Route::get('/', fn() => Inertia::render('Student/Habit/Worship/Index'))->name('index');
+            Route::get('/islam', fn() => Inertia::render('Student/Habit/Worship/Islam'))->name('islam');
+            Route::get('/protestan', fn() => Inertia::render('Student/Habit/Worship/Protestant'))->name('protestant');
+            Route::get('/katolik', fn() => Inertia::render('Student/Habit/Worship/Catholic'))->name('catholic');
+            Route::get('/hindu', fn() => Inertia::render('Student/Habit/Worship/Hindu'))->name('hindu');
             Route::get('/buddha', fn() => Inertia::render('Student/Habit/Worship/Buddhist'))->name('buddhist');
             Route::get('/khonghucu', fn() => Inertia::render('Student/Habit/Worship/Khonghucu'))->name('khonghucu');
         });
+    });
+
+    // 2b. STUDENT PROFILE (Profil Murid)
+    Route::prefix('murid')->name('student.')->group(function () {
+        Route::get('/profil', [\App\Http\Controllers\Student\ProfileController::class, 'index'])->name('profile');
+        Route::put('/profil', [\App\Http\Controllers\Student\ProfileController::class, 'update'])->name('profile.update');
     });
 
     // 3. DASHBOARD GURU
@@ -81,4 +87,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

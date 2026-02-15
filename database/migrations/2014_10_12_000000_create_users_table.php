@@ -44,7 +44,8 @@ return new class extends Migration
             $table->integer('xp')->default(0);                    
             $table->integer('koin')->default(0);                  
             $table->integer('bintang')->default(0);               
-            $table->integer('streak_count')->default(0);          
+            $table->integer('streak_count')->default(0);
+            $table->integer('level')->default(1);                 // Level 1-100          
 
             // --- 6. ADMINISTRASI ---
             $table->string('signature_path')->nullable();         

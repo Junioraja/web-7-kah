@@ -79,7 +79,9 @@ export default function Dashboard() {
                     <NavItem icon={<Trophy />} label="Peringkat" />
                     <NavItem icon={<Storefront />} label="Toko Skin" />
                     <NavItem icon={<EnvelopeSimple />} label="Pesan" badge={2} />
-                    <NavItem icon={<User />} label="Profil Saya" />
+                    <Link href={route('student.profile')}>
+                        <NavItem icon={<User />} label="Profil Saya" />
+                    </Link>
                 </nav>
                 {/* User Mini Profile di Sidebar */}
                 <div className="p-4 bg-card/80 rounded-2xl border border-border flex items-center gap-3">
@@ -309,7 +311,9 @@ export default function Dashboard() {
                     <Plus weight="bold" size={24} />
                 </div>
                 <MobileNavItem icon={<Trophy weight="bold" />} />
-                <MobileNavItem icon={<User weight="bold" />} />
+                <Link href={route('student.profile')}>
+                    <MobileNavItem icon={<User weight="bold" />} />
+                </Link>
             </nav>
         </div>
     );
